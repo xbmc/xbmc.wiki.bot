@@ -127,7 +127,7 @@ def extractAddonData(data):
 		addon['extension point'] = data.extension['point']
  
 	try:
-		addon['provider-name'] = u""+data['provider-name']
+		addon['provider-name'] = u""+data['provider-name'].replace('|',' & ')
 	except:
 		addon['provider-name'] = u""
  
