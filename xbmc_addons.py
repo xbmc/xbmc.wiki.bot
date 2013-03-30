@@ -74,11 +74,21 @@ def UpdateAddons(*args):
 			iconUrl = u""
 		# Create Addon template
 		try:
-			addontext = ("{{Addon \n|Name=" + addon_data['name'] + "\n|provider-name="+ addon_data['provider-name'] + 
-			"\n|ID=" + addon_data['id'] + "\n|latest-version=" + addon_data['version']+ "\n|extension point=" + 
-			addon_data['extension point'] + "\n|provides="+ addon_data['provides'] + "\n|Summary=" + 
-			addon_data['summary'] + "\n|Description=" + addon_data['description'] +  "\n|Platform="+ 
-			addon_data['platform'] + "\n|broken="+ addon_data['broken'] + "\n|icon url=" + iconUrl + "}}")
+			addontext = ("{{Addon \n|Name=" + addon_data['name'] + 
+                            "\n|provider-name="+ addon_data['provider-name'] + 
+                            "\n|ID=" + addon_data['id'] + 
+                            "\n|latest-version=" + addon_data['version']+ 
+                            "\n|extension point=" + addon_data['extension point'] + 
+                            "\n|provides="+ addon_data['provides'] + 
+                            "\n|Summary=" +	addon_data['summary'] + 
+                            "\n|Description=" + addon_data['description'] +  
+                            "\n|Platform=" + addon_data['platform'] + 
+                            "\n|forum=" + addon_data['forum'] + 
+                            "\n|website=" + addon_data['website'] + 
+                            "\n|source=" + addon_data['source'] + 
+                            "\n|email=" + addon_data['email'] + 
+                            "\n|broken=" + addon_data['broken'] + 
+                            "\n|icon url=" + iconUrl + "}}")
 		except:
 			pywikibot.output(u"Some Error creating Addons String, skipping..")
 			continue
@@ -162,6 +172,26 @@ def extractAddonData(data):
 	except:
 		addon['broken'] = u""
  
+	try:
+		addon['forum'] = u""+data.forum.string
+	except:
+		addon['forum'] = u""
+ 
+	try:
+		addon['website'] = u""+data.website.string
+	except:
+		addon['website'] = u""
+ 
+	try:
+		addon['source'] = u""+data.source.string
+	except:
+		addon['source'] = u""
+ 
+	try:
+		addon['email'] = u""+data.email.string
+	except:
+		addon['email'] = u""
+
 	try:
 		if data.noicon.string == u"true":
 			addon['noicon'] = True
