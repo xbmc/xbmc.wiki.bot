@@ -31,96 +31,95 @@ import wikipedia as pywikibot
 import sys, urllib2, re
 from BeautifulSoup import BeautifulStoneSoup # For processing XML
  
-repoUrls={
-    'Dharma':u'http://mirrors.xbmc.org/addons/dharma/',
-    'Eden':u'http://mirrors.xbmc.org/addons/eden/',
-    'Frodo':u'http://mirrors.xbmc.org/addons/frodo/',
-    }
+repoUrls={'Dharma':u'http://mirrors.xbmc.org/addons/dharma/',
+          'Eden':u'http://mirrors.xbmc.org/addons/eden/',
+          'Frodo':u'http://mirrors.xbmc.org/addons/frodo/',
+         }
  
 def UpdateAddons(*args):
-	site = pywikibot.getSite()
-	try:
-		repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
-	except: 
-		repoUrl = repoUrls['Frodo']
-	pywikibot.output(u'Repo URL: ' + repoUrl)
-	soup = importAddonXML(repoUrl + "addons.xml")
-	for addon in soup.addons:
-		newtext = None
-		addontext = None
-		oldtext = None
-		iconUrl = None
-		# Extract Add-on details from xml
-		addon_data = extractAddonData(addon)	
-		# Which Wiki page are we looking at?
-		pagename = 'Add-on:' + addon_data['name']
-		#pagename = 'Sandbox'	
+    site = pywikibot.getSite()
+    try:
+        repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
+    except: 
+        repoUrl = repoUrls['Frodo']
+    pywikibot.output(u'Repo URL: ' + repoUrl)
+    soup = importAddonXML(repoUrl + "addons.xml")
+    for addon in soup.addons:
+        newtext = None
+        addontext = None
+        oldtext = None
+        iconUrl = None
+        # Extract Add-on details from xml
+        addon_data = extractAddonData(addon)    
+        # Which Wiki page are we looking at?
+        pagename = 'Add-on:' + addon_data['name']
+        #pagename = 'Sandbox'    
  
-		# Get content of wiki page
-		page = pywikibot.Page(site, pagename)
-		try:
-			oldtext = page.get(force = False, get_redirect=True, throttle = True, sysop = False, change_edit_time = True)
-		except pywikibot.NoPage:
-			oldtext =  ''
-		except pywikibot.IsRedirectPage:
-			pywikibot.output(u'%s is a redirect!' % pagename)
-		except pywikibot.Error: # third exception, take the problem and print
-			pywikibot.output(u"Some Error, skipping..")
-			continue
+        # Get content of wiki page
+        page = pywikibot.Page(site, pagename)
+        try:
+            oldtext = page.get(force = False, get_redirect=True, throttle = True, sysop = False, change_edit_time = True)
+        except pywikibot.NoPage:
+            oldtext =  ''
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u'%s is a redirect!' % pagename)
+        except pywikibot.Error: # third exception, take the problem and print
+            pywikibot.output(u"Some Error, skipping..")
+            continue
  
-		if addon_data['icon url'] != u"":
-			iconUrl = repoUrl + addon_data['icon url']
-		else:
-			iconUrl = u""
-		# Create Addon template
-		try:
-			addontext = ("{{Addon \n|Name=" + addon_data['name'] + 
-                            "\n|provider-name="+ addon_data['provider-name'] + 
-                            "\n|ID=" + addon_data['id'] + 
-                            "\n|latest-version=" + addon_data['version']+ 
-                            "\n|extension point=" + addon_data['extension point'] + 
-                            "\n|provides="+ addon_data['provides'] + 
-                            "\n|Summary=" +	addon_data['summary'] + 
-                            "\n|Description=" + addon_data['description'] +  
-                            "\n|Platform=" + addon_data['platform'] + 
-                            "\n|forum=" + addon_data['forum'] + 
-                            "\n|website=" + addon_data['website'] + 
-                            "\n|source=" + addon_data['source'] + 
-                            "\n|email=" + addon_data['email'] + 
-                            "\n|broken=" + addon_data['broken'] + 
-                            "\n|icon url=" + iconUrl + "}}")
-		except:
-			pywikibot.output(u"Some Error creating Addons String, skipping..")
-			continue
+        if addon_data['icon url'] != u"":
+            iconUrl = repoUrl + addon_data['icon url']
+        else:
+            iconUrl = u""
+        # Create Addon template
+        try:
+            addontext = ("{{Addon \n|Name=" + addon_data['name'] + 
+                         "\n|provider-name="+ addon_data['provider-name'] + 
+                         "\n|ID=" + addon_data['id'] + 
+                         "\n|latest-version=" + addon_data['version']+ 
+                         "\n|extension point=" + addon_data['extension point'] + 
+                         "\n|provides="+ addon_data['provides'] + 
+                         "\n|Summary=" + addon_data['summary'] + 
+                         "\n|Description=" + addon_data['description'] +  
+                         "\n|Platform=" + addon_data['platform'] + 
+                         "\n|forum=" + addon_data['forum'] + 
+                         "\n|website=" + addon_data['website'] + 
+                         "\n|source=" + addon_data['source'] + 
+                         "\n|email=" + addon_data['email'] + 
+                         "\n|broken=" + addon_data['broken'] + 
+                         "\n|icon url=" + iconUrl + "}}")
+        except:
+            pywikibot.output(u"Some Error creating Addons String, skipping..")
+            continue
  
-		# Replace existing Addon template
-		templateRegex = re.compile(r'\{\{ *(' + ':|'+ \
-								   r':|[mM][sS][gG]:)?Addon' + \
-								   r'(?P<parameters>\s*\|.+?|) *}}',
-								   re.DOTALL)		
-		replacedText = re.subn(templateRegex, addontext, oldtext)			
+        # Replace existing Addon template
+        templateRegex = re.compile(r'\{\{ *(' + ':|'+ \
+                                   r':|[mM][sS][gG]:)?Addon' + \
+                                   r'(?P<parameters>\s*\|.+?|) *}}',
+                                   re.DOTALL)
+        replacedText = re.subn(templateRegex, addontext, oldtext)
  
-		if replacedText[1] > 0:
-			newtext = replacedText[0]
-		else:	
-			newtext = addontext + "\n" + oldtext
-		# print newtext (debug)
-		# pywikibot.output(newtext)
+        if replacedText[1] > 0:
+            newtext = replacedText[0]
+        else:    
+            newtext = addontext + "\n" + oldtext
+        # print newtext (debug)
+        # pywikibot.output(newtext)
  
-		# Push new page to wiki
-		try: 
-			page.put(newtext, comment='Addon-Bot Update', watchArticle = None, minorEdit = True)
-		except pywikibot.LockedPage:
-			pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
-		except pywikibot.EditConflict:
-			pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
-		except pywikibot.SpamfilterError, error:
-			pywikibot.output(u'Cannot change %s because of spam blacklist entry %s' % (page.title(), error.url))		
-		except:
-			pywikibot.output(u"Some Error writing to wiki page, skipping..")
-			continue
-		# break here for testing purposes
-		# break
+        # Push new page to wiki
+        try: 
+            page.put(newtext, comment='Addon-Bot Update', watchArticle = None, minorEdit = True)
+        except pywikibot.LockedPage:
+            pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
+        except pywikibot.EditConflict:
+            pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
+        except pywikibot.SpamfilterError, error:
+            pywikibot.output(u'Cannot change %s because of spam blacklist entry %s' % (page.title(), error.url))
+        except:
+            pywikibot.output(u"Some Error writing to wiki page, skipping..")
+            continue
+        # break here for testing purposes
+        # break
  
  
 # Converts soup element into a tuple
@@ -128,94 +127,94 @@ def UpdateAddons(*args):
 # data: Soup addon element from repo addons.xml
 def extractAddonData(data):
  
-	addon = {'name' : data['name']}
-	addon['id'] = data['id']
-	addon['version'] = data['version']	
-	try:
-		addon['extension point'] = data.find('extension',library=True)['point']
-	except:
-		addon['extension point'] = data.extension['point']
+    addon = {'name' : data['name']}
+    addon['id'] = data['id']
+    addon['version'] = data['version']    
+    try:
+        addon['extension point'] = data.find('extension',library=True)['point']
+    except:
+        addon['extension point'] = data.extension['point']
  
-	try:
-		addon['provider-name'] = u""+data['provider-name'].replace('|',' & ')
-	except:
-		addon['provider-name'] = u""
+    try:
+        addon['provider-name'] = u""+data['provider-name'].replace('|',' & ')
+    except:
+        addon['provider-name'] = u""
  
-	try:
-		addon['provides'] = u""+data.find('extension',library=True).provides.string
-	except:
-		addon['provides'] = u""
+    try:
+        addon['provides'] = u""+data.find('extension',library=True).provides.string
+    except:
+        addon['provides'] = u""
  
-	try:
-		addon['summary'] = u""+data('summary', lang="en")[0].string
-	except:
-		try:
-			addon['summary'] = u""+data.summary.string
-		except:
-			addon['summary'] = u""
+    try:
+        addon['summary'] = u""+data('summary', lang="en")[0].string
+    except:
+        try:
+            addon['summary'] = u""+data.summary.string
+        except:
+            addon['summary'] = u""
  
-	try:
-		addon['description'] = u""+data('description', lang="en")[0].string
-	except:
-		try:
-			addon['description'] = u""+data.description.string
-		except:
-			addon['description'] = u""
+    try:
+        addon['description'] = u""+data('description', lang="en")[0].string
+    except:
+        try:
+            addon['description'] = u""+data.description.string
+        except:
+            addon['description'] = u""
  
-	try:
-		addon['platform'] = u""+data.platform.string
-	except:
-		addon['platform'] = u""
+    try:
+        addon['platform'] = u""+data.platform.string
+    except:
+        addon['platform'] = u""
  
-	try:
-		addon['broken'] = u""+data.broken.string
-	except:
-		addon['broken'] = u""
+    try:
+        addon['broken'] = u""+data.broken.string
+    except:
+        addon['broken'] = u""
  
-	try:
-		addon['forum'] = u""+data.forum.string
-	except:
-		addon['forum'] = u""
+    try:
+        addon['forum'] = u""+data.forum.string
+    except:
+        addon['forum'] = u""
  
-	try:
-		addon['website'] = u""+data.website.string
-	except:
-		addon['website'] = u""
+    try:
+        addon['website'] = u""+data.website.string
+    except:
+        addon['website'] = u""
  
-	try:
-		addon['source'] = u""+data.source.string
-	except:
-		addon['source'] = u""
+    try:
+        addon['source'] = u""+data.source.string
+    except:
+        addon['source'] = u""
  
-	try:
-		addon['email'] = u""+data.email.string
-	except:
-		addon['email'] = u""
+    try:
+        addon['email'] = u""+data.email.string
+    except:
+        addon['email'] = u""
 
-	try:
-		if data.noicon.string == u"true":
-			addon['noicon'] = True
-		else:
-			addon['noicon'] = False
-	except:
-		addon['noicon'] = False
+    try:
+        if data.noicon.string == u"true":
+            addon['noicon'] = True
+        else:
+            addon['noicon'] = False
+    except:
+        addon['noicon'] = False
  
-	if addon['noicon']:
-		addon['icon url'] = u""
-	else:
-		addon['icon url'] = u''+addon['id']+'/icon.png'
+    if addon['noicon']:
+        addon['icon url'] = u""
+    else:
+        addon['icon url'] = u''+addon['id']+'/icon.png'
  
-	addon['summary'] = re.sub("\[CR\]","\\n",addon['summary'])	
-	addon['description'] = re.sub("\[CR\]","\\n",addon['description'])
-	return addon
+    addon['summary'] = re.sub("\[CR\]","\\n",addon['summary'])
+    addon['description'] = re.sub("\[CR\]","\\n",addon['description'])
+    return addon
  
 # Download addons.xml and return Soup xml class
 def importAddonXML(url):
-	page = urllib2.urlopen(url)
-	return BeautifulStoneSoup(page)
+    page = urllib2.urlopen(url)
+    return BeautifulStoneSoup(page)
  
 if __name__ == '__main__':
     try:
-        UpdateAddons()
+       UpdateAddons()
     finally:
-        pywikibot.stopme()
+       pywikibot.stopme() 
