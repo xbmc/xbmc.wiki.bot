@@ -82,6 +82,7 @@ def UpdateAddons(*args):
                          "\n|Summary=" + addon_data['summary'] +
                          "\n|Description=" + addon_data['description'] +
                          "\n|Platform=" + addon_data['platform'] +
+                         "\n|Language=" + addon_data['language'] +
                          "\n|Forum=" + addon_data['forum'] +
                          "\n|Website=" + addon_data['website'] +
                          "\n|Source=" + addon_data['source'] +
@@ -165,6 +166,11 @@ def extractAddonData(data):
         addon['platform'] = u""+data.platform.string
     except:
         addon['platform'] = u""
+
+    try:
+        addon['language'] = u""+data.language.string
+    except:
+        addon['language'] = u""
 
     try:
         addon['forum'] = u""+data.forum.string
