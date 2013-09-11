@@ -34,6 +34,7 @@ from BeautifulSoup import BeautifulStoneSoup # For processing XML
 repoUrls={'Dharma':u'http://mirrors.xbmc.org/addons/dharma/',
           'Eden':u'http://mirrors.xbmc.org/addons/eden/',
           'Frodo':u'http://mirrors.xbmc.org/addons/frodo/',
+          'Gotham':u'http://mirrors.xbmc.org/addons/gotham/',
          }
 
 def UpdateAddons(*args):
