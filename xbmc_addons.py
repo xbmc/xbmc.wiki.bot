@@ -5,7 +5,8 @@ Usage: xbmc_addons.py [repo]
 where repo can be one of these:
  * Dharma
  * Eden
- * Frodo (default Repo)
+ * Frodo
+ * Gotham (default Repo)
 
 """
 #
