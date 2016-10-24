@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Reads addons.xml and creates/updates pages.
-Usage: xbmc_addons.py [repo]
-where repo can be one of these:
- * Dharma
- * Eden
- * Frodo
- * Gotham (default Repo)
-
+Reads addons.xml and creates/updates addon pages.
+Usage: python pwb.py addons.py [repo]
+where repo (optional) can be one of these:
+ * Gotham
+ * Helix
+ * Isengard
+ * Jarvis
+ * Krypton (default)
 """
 #
-# Copyright (C) 2005-2013 Team XBMC
-# http://www.xbmc.org
+# Copyright (C) 2005-2015 Team Kodi
+# http://kodi.tv
 #
 # This Program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,14 +28,15 @@ where repo can be one of these:
 # the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 # http://www.gnu.org/copyleft/gpl.html
 
-import wikipedia as pywikibot
+import pywikibot
 import sys, urllib2, re
 from BeautifulSoup import BeautifulStoneSoup # For processing XML
 
-repoUrls={'Dharma':u'http://mirrors.xbmc.org/addons/dharma/',
-          'Eden':u'http://mirrors.xbmc.org/addons/eden/',
-          'Frodo':u'http://mirrors.xbmc.org/addons/frodo/',
-          'Gotham':u'http://mirrors.xbmc.org/addons/gotham/',
+repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
+          'Helix':u'http://mirrors.kodi.tv/addons/helix/',
+          'Isengard':u'http://mirrors.kodi.tv/addons/isengard/',
+          'Jarvis':u'http://mirrors.kodi.tv/addons/jarvis/',
+          'Krypton':u'http://mirrors.kodi.tv/addons/krypton/',
          }
 
 def UpdateAddons(*args):
@@ -43,7 +44,7 @@ def UpdateAddons(*args):
     try:
         repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
     except:
-        repoUrl = repoUrls['Frodo']
+        repoUrl = repoUrls['Krypton']
     pywikibot.output(u'Repo URL: ' + repoUrl)
     soup = importAddonXML(repoUrl + "addons.xml")
     for addon in soup.addons:
@@ -123,7 +124,7 @@ def UpdateAddons(*args):
             pywikibot.output(u"Some Error writing to wiki page, skipping..")
             continue
         # break here for testing purposes
-        # break
+#        break
 
 
 # Converts soup element into a tuple
@@ -216,7 +217,10 @@ def extractAddonData(data):
     if addon['noicon']:
         addon['icon url'] = u""
     else:
-        addon['icon url'] = u''+addon['id']+'/icon.png'
+        try:
+            addon['icon url'] = u""+addon['id']+'/'+data.assets.icon.string
+        except:
+            addon['icon url'] = u''+addon['id']+'/icon.png'
 
     addon['summary'] = re.sub("\[CR\]","\\n",addon['summary'])
     addon['description'] = re.sub("\[CR\]","\\n",addon['description'])
@@ -224,7 +228,9 @@ def extractAddonData(data):
 
 # Download addons.xml and return Soup xml class
 def importAddonXML(url):
-    page = urllib2.urlopen(url)
+    headers = {'User-Agent':'Kodi-AddonBot'}
+    req = urllib2.Request(url, None, headers)
+    page = urllib2.urlopen(req)
     return BeautifulStoneSoup(page)
 
 if __name__ == '__main__':
