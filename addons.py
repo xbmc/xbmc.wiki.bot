@@ -29,7 +29,7 @@ where repo (optional) can be one of these:
 # http://www.gnu.org/copyleft/gpl.html
 
 import pywikibot
-import sys, urllib2, re
+import sys, urllib2, re, zlib
 from BeautifulSoup import BeautifulStoneSoup # For processing XML
 
 repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
@@ -46,7 +46,10 @@ def UpdateAddons(*args):
     except:
         repoUrl = repoUrls['Krypton']
     pywikibot.output(u'Repo URL: ' + repoUrl)
-    soup = importAddonXML(repoUrl + "addons.xml")
+    try:
+      soup = importAddonXML(repoUrl + 'addons.xml.gz')
+    except urllib2.HTTPError:
+      soup = importAddonXML(repoUrl + 'addons.xml')
     for addon in soup.addons:
         newtext = None
         addontext = None
@@ -231,6 +234,9 @@ def importAddonXML(url):
     headers = {'User-Agent':'Kodi-AddonBot'}
     req = urllib2.Request(url, None, headers)
     page = urllib2.urlopen(req)
+    if page.headers.get('Content-Type').find('gzip') >= 0:
+      d = zlib.decompressobj(16+zlib.MAX_WBITS)
+      page = d.decompress(page.read())
     return BeautifulStoneSoup(page)
 
 if __name__ == '__main__':
