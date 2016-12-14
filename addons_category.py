@@ -23,7 +23,7 @@ Usage: python pwb.py addons_category.py
 # http://www.gnu.org/copyleft/gpl.html
 
 
-import sys, urllib2, re
+import sys, urllib2, re, zlib
 from BeautifulSoup import BeautifulStoneSoup # For processing XML
 from pywikibot.compat import catlib
 from pywikibot import pagegenerators
@@ -145,7 +145,10 @@ def checkInRepo(addon_id, soups):
 def importAllAddonXML():
     soup = { }
     for repoName, repoUrl in repoUrls.iteritems():
-        soup[repoName] = importAddonXML(repoUrl + "addons.xml")
+        try:
+            soup[repoName] = importAddonXML(repoUrl + "addons.xml.gz")
+        except urllib2.HTTPError:
+            soup[repoName] = importAddonXML(repoUrl + "addons.xml")
     return soup
     
 # Download addons.xml and return Soup xml class
@@ -153,6 +156,9 @@ def importAddonXML(url):
     headers = {'User-Agent':'Kodi-AddonBot'}
     req = urllib2.Request(url, None, headers)
     page = urllib2.urlopen(req)
+    if page.headers.get('Content-Type').find('gzip') >= 0:
+      d = zlib.decompressobj(16+zlib.MAX_WBITS)
+      page = d.decompress(page.read())
     return BeautifulStoneSoup(page)
 
 if __name__ == '__main__':
