@@ -154,20 +154,26 @@ def extractAddonData(data):
         addon['provides'] = u""
 
     try:
-        addon['summary'] = u""+data('summary', lang="en")[0].string
+        addon['summary'] = u""+data('summary', lang="en_GB")[0].string
     except:
         try:
-            addon['summary'] = u""+data.summary.string
+            addon['summary'] = u""+data('summary', lang="en")[0].string
         except:
-            addon['summary'] = u""
+            try:
+                addon['summary'] = u""+data.summary.string
+            except:
+                addon['summary'] = u""
 
     try:
-        addon['description'] = u""+data('description', lang="en")[0].string
+        addon['description'] = u""+data('description', lang="en_GB")[0].string
     except:
         try:
-            addon['description'] = u""+data.description.string
+            addon['description'] = u""+data('description', lang="en")[0].string
         except:
-            addon['description'] = u""
+            try:
+                addon['description'] = u""+data.description.string
+            except:
+                addon['description'] = u""
 
     try:
         addon['platform'] = u""+data.platform.string
