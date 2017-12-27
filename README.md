@@ -1,7 +1,7 @@
 SETUP
 =====
 0. create a wiki user with 'bot' permissions
-1. download pywikibot (http://tools.wmflabs.org/pywikibot/core_stable.zip)
+1. download pywikibot (http://tools.wmflabs.org/pywikibot/core.zip)
 2. extract the zipfile
 3. place the following files in the pywikibot root directory:
 - addons.py
