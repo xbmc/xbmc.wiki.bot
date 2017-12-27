@@ -35,6 +35,7 @@ repoUrls={
     'Isengard':u'http://mirrors.kodi.tv/addons/isengard/',
     'Jarvis':u'http://mirrors.kodi.tv/addons/jarvis/',
     'Krypton':u'http://mirrors.kodi.tv/addons/krypton/',
+    'Leia':u'http://mirrors.kodi.tv/addons/leia/',
     }
 
 repoCats={
@@ -43,6 +44,7 @@ repoCats={
     'Isengard':u'Isengard add-on repository',
     'Jarvis':u'Jarvis add-on repository',
     'Krypton':u'Krypton add-on repository',
+    'Leia':u'Leia add-on repository',
     }
 
 def UpdateRepoCats(*args):

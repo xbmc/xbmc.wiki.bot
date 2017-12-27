@@ -8,6 +8,7 @@ where repo (optional) can be one of these:
  * Isengard
  * Jarvis
  * Krypton (default)
+ * Leia
 """
 #
 # Copyright (C) 2005-2015 Team Kodi
@@ -37,6 +38,7 @@ repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
           'Isengard':u'http://mirrors.kodi.tv/addons/isengard/',
           'Jarvis':u'http://mirrors.kodi.tv/addons/jarvis/',
           'Krypton':u'http://mirrors.kodi.tv/addons/krypton/',
+          'Leia':u'http://mirrors.kodi.tv/addons/leia/',
          }
 
 def UpdateAddons(*args):
