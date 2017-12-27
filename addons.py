@@ -242,7 +242,7 @@ def importAddonXML(url):
     headers = {'User-Agent':'Kodi-AddonBot'}
     req = urllib2.Request(url, None, headers)
     page = urllib2.urlopen(req)
-    if page.headers.get('Content-Type').find('gzip') >= 0:
+    if page.headers.get('Content-Type').find('gzip') >= 0 or page.headers.get('Content-Type').find('application/octet-stream') >= 0:
       d = zlib.decompressobj(16+zlib.MAX_WBITS)
       page = d.decompress(page.read())
     return BeautifulStoneSoup(page)
