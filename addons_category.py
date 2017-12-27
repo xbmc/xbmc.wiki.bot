@@ -161,7 +161,7 @@ def importAddonXML(url):
     if page.headers.get('Content-Type').find('gzip') >= 0:
       d = zlib.decompressobj(16+zlib.MAX_WBITS)
       page = d.decompress(page.read())
-    return BeautifulStoneSoup(page.decode("utf-8"))
+    return BeautifulStoneSoup(page)
 
 if __name__ == '__main__':
     try:
