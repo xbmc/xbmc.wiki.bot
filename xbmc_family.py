@@ -17,3 +17,7 @@ class Family(family.Family):
         return {
             'en': u'1.15.1',
         }[code]
+
+    def protocol(self, code):
+        """Return the protocol for this family."""
+        return 'https'
