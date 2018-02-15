@@ -141,9 +141,9 @@ def extractAddonData(data):
     addon['id'] = data['id']
     addon['version'] = data['version']
     try:
-        addon['extension point'] = data.find('extension',library=True)['point']
-    except:
         addon['extension point'] = data.extension['point']
+    except:
+        addon['extension point'] = ''
 
     try:
         addon['provider-name'] = u""+data['provider-name'].replace('|',' & ')
