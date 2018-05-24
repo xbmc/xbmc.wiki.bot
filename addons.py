@@ -150,9 +150,12 @@ def extractAddonData(data):
     except:
         addon['provider-name'] = u""
 
-    try:
-        addon['provides'] = u""+data.find('extension',library=True).provides.string
-    except:
+    if addon['extension point'] == 'xbmc.python.pluginsource' or addon['extension point'] == 'xbmc.python.script':
+        try:
+            addon['provides'] = u""+data.find('extension',library=True).provides.string
+        except:
+            addon['provides'] = u""
+    else:
         addon['provides'] = u""
 
     try:

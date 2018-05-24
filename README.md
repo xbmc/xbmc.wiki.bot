@@ -10,6 +10,8 @@ SETUP
 - user-config.py
 4. place the following file in the pywikibot/families directory:
 - xbmc_family.py
+5. to speed things up, set seconds to 0 here:
+- https://github.com/wikimedia/pywikibot/blob/46c9a900026092c6bb20c0092b4f76387dfdba38/pywikibot/throttle.py#L232
 
 
 UPDATE WIKI PAGES
