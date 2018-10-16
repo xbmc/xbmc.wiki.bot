@@ -7,8 +7,8 @@ where repo (optional) can be one of these:
  * Helix
  * Isengard
  * Jarvis
- * Krypton (default)
- * Leia
+ * Krypton
+ * Leia (default)
 """
 #
 # Copyright (C) 2005-2015 Team Kodi
@@ -30,7 +30,7 @@ where repo (optional) can be one of these:
 # http://www.gnu.org/copyleft/gpl.html
 
 import pywikibot
-import sys, urllib2, re, zlib
+import sys, urllib2, re, zlib, os
 from BeautifulSoup import BeautifulStoneSoup # For processing XML
 
 repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
@@ -46,7 +46,7 @@ def UpdateAddons(*args):
     try:
         repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
     except:
-        repoUrl = repoUrls['Krypton']
+        repoUrl = repoUrls['Leia']
     pywikibot.output(u'Repo URL: ' + repoUrl)
     try:
       soup = importAddonXML(repoUrl + 'addons.xml.gz')
@@ -66,9 +66,10 @@ def UpdateAddons(*args):
         # Get content of wiki page
         page = pywikibot.Page(site, pagename)
         try:
-            oldtext = page.get(force = False, get_redirect=True, throttle = True, sysop = False, change_edit_time = True)
+            oldtext = page.get(force = False, get_redirect = True, throttle = True, sysop = False, change_edit_time = True)
         except pywikibot.NoPage:
             oldtext =  ''
+            pywikibot.output(u'%s not found' % pagename)
         except pywikibot.IsRedirectPage:
             pywikibot.output(u'%s is a redirect!' % pagename)
         except pywikibot.Error: # third exception, take the problem and print
@@ -143,7 +144,7 @@ def extractAddonData(data):
     try:
         addon['extension point'] = data.extension['point']
     except:
-        addon['extension point'] = ''
+        addon['extension point'] = ""
 
     try:
         addon['provider-name'] = u""+data['provider-name'].replace('|',' & ')
@@ -221,6 +222,11 @@ def extractAddonData(data):
         addon['broken'] = u""
 
     try:
+        addon['path'] = u""+os.path.split(data.path.string)[0]
+    except:
+        addon['path'] = u""
+
+    try:
         if data.noicon.string == u"true":
             addon['noicon'] = True
         else:
@@ -232,9 +238,9 @@ def extractAddonData(data):
         addon['icon url'] = u""
     else:
         try:
-            addon['icon url'] = u""+addon['id']+'/'+data.assets.icon.string
+            addon['icon url'] = u""+addon['path']+'/'+data.assets.icon.string
         except:
-            addon['icon url'] = u''+addon['id']+'/icon.png'
+            addon['icon url'] = u''+addon['path']+'/icon.png'
 
     addon['summary'] = re.sub("\[CR\]","\\n",addon['summary'])
     addon['description'] = re.sub("\[CR\]","\\n",addon['description'])
