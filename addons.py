@@ -52,6 +52,7 @@ def UpdateAddons(*args):
       soup = importAddonXML(repoUrl + 'addons.xml.gz')
     except urllib2.HTTPError:
       soup = importAddonXML(repoUrl + 'addons.xml')
+    processed = []
     for addon in soup.addons:
         newtext = None
         addontext = None
@@ -59,6 +60,10 @@ def UpdateAddons(*args):
         iconUrl = None
         # Extract Add-on details from xml
         addon_data = extractAddonData(addon)
+        # Binary addons have multiple (platform specific) copies in the repo, process only 1 of them
+        if addon_data['id'] in processed:
+            continue
+        processed.append(addon_data['id'])
         # Which Wiki page are we looking at?
         pagename = 'Add-on:' + addon_data['name']
         #pagename = 'Sandbox'
