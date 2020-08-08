@@ -39,6 +39,7 @@ repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
           'Jarvis':u'http://mirrors.kodi.tv/addons/jarvis/',
           'Krypton':u'http://mirrors.kodi.tv/addons/krypton/',
           'Leia':u'http://mirrors.kodi.tv/addons/leia/',
+          'Matrix':u'http://mirrors.kodi.tv/addons/matrix/',
          }
 
 def UpdateAddons(*args):
