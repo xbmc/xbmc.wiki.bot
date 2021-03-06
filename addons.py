@@ -8,7 +8,8 @@ where repo (optional) can be one of these:
  * Isengard
  * Jarvis
  * Krypton
- * Leia (default)
+ * Leia
+ * Matrix (default)
 """
 #
 # Copyright (C) 2005-2015 Team Kodi
@@ -47,7 +48,7 @@ def UpdateAddons(*args):
     try:
         repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
     except:
-        repoUrl = repoUrls['Leia']
+        repoUrl = repoUrls['Matrix']
     pywikibot.output(u'Repo URL: ' + repoUrl)
     try:
       soup = importAddonXML(repoUrl + 'addons.xml.gz')
