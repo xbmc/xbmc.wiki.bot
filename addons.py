@@ -31,8 +31,8 @@ where repo (optional) can be one of these:
 # http://www.gnu.org/copyleft/gpl.html
 
 import pywikibot
-import sys, urllib2, re, zlib, os
-from BeautifulSoup import BeautifulStoneSoup # For processing XML
+import sys, urllib, re, zlib, os
+from bs4 import BeautifulSoup # For processing XML
 
 repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
           'Helix':u'http://mirrors.kodi.tv/addons/helix/',
@@ -44,15 +44,15 @@ repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
          }
 
 def UpdateAddons(*args):
-    site = pywikibot.getSite()
+    site = pywikibot.Site()
     try:
-        repoUrl = repoUrls[pywikibot.handleArgs(*args)[0]]
+        repoUrl = repoUrls[pywikibot.handle_args(*args)[0]]
     except:
         repoUrl = repoUrls['Matrix']
     pywikibot.output(u'Repo URL: ' + repoUrl)
     try:
       soup = importAddonXML(repoUrl + 'addons.xml.gz')
-    except urllib2.HTTPError:
+    except urllib.error.HTTPError:
       soup = importAddonXML(repoUrl + 'addons.xml')
     processed = []
     for addon in soup.addons:
@@ -73,14 +73,14 @@ def UpdateAddons(*args):
         # Get content of wiki page
         page = pywikibot.Page(site, pagename)
         try:
-            oldtext = page.get(force = False, get_redirect = True, throttle = True, sysop = False, change_edit_time = True)
+            oldtext = page.get(force = False, get_redirect = True, sysop = False)
         except pywikibot.NoPage:
             oldtext =  ''
             pywikibot.output(u'%s not found' % pagename)
         except pywikibot.IsRedirectPage:
             pywikibot.output(u'%s is a redirect!' % pagename)
-        except pywikibot.Error: # third exception, take the problem and print
-            pywikibot.output(u"Some Error, skipping..")
+        except pywikibot.Error as error: # third exception, take the problem and print
+            pywikibot.output(u"Some Error (%s), skipping.." % error)
             continue
 
         if addon_data['icon url'] != u"":
@@ -107,7 +107,7 @@ def UpdateAddons(*args):
                          "\n|broken=" + addon_data['broken'] +
                          "\n|icon url=" + iconUrl + "}}")
         except:
-            pywikibot.output(u"Some Error creating Addons String, skipping..")
+            pywikibot.output(u"Some Error creating Addons String for addon %s, skipping.." % addon_data['name'])
             continue
 
         # Replace existing Addon template
@@ -115,7 +115,11 @@ def UpdateAddons(*args):
                                    r':|[mM][sS][gG]:)?Addon' + \
                                    r'(?P<parameters>\s*\|.+?|) *}}',
                                    re.DOTALL)
-        replacedText = re.subn(templateRegex, addontext, oldtext)
+        try:
+            replacedText = re.subn(templateRegex, addontext, oldtext)
+        except re.error as error:
+            pywikibot.output("Error in addon %s: %s" % (addon_data['name'] , error))
+            continue
 
         if replacedText[1] > 0:
             newtext = replacedText[0]
@@ -126,12 +130,12 @@ def UpdateAddons(*args):
 
         # Push new page to wiki
         try:
-            page.put(newtext, comment='Addon-Bot Update', watchArticle = None, minorEdit = True)
+            page.put(newtext, summary='Addon-Bot Update', watchArticle = None, minorEdit = True)
         except pywikibot.LockedPage:
             pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
         except pywikibot.EditConflict:
             pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
-        except pywikibot.SpamfilterError, error:
+        except pywikibot.SpamfilterError as error:
             pywikibot.output(u'Cannot change %s because of spam blacklist entry %s' % (page.title(), error.url))
         except:
             pywikibot.output(u"Some Error writing to wiki page, skipping..")
@@ -197,7 +201,7 @@ def extractAddonData(data):
         addon['language'] = u""+data.language.string
     except:
         addon['language'] = u""
-        
+
     try:
         addon['license'] = u""+data.license.string
     except:
@@ -256,12 +260,12 @@ def extractAddonData(data):
 # Download addons.xml and return Soup xml class
 def importAddonXML(url):
     headers = {'User-Agent':'Kodi-AddonBot'}
-    req = urllib2.Request(url, None, headers)
-    page = urllib2.urlopen(req)
+    req = urllib.request.Request(url, None, headers)
+    page = urllib.request.urlopen(req)
     if page.headers.get('Content-Type').find('gzip') >= 0 or page.headers.get('Content-Type').find('application/octet-stream') >= 0:
       d = zlib.decompressobj(16+zlib.MAX_WBITS)
       page = d.decompress(page.read())
-    return BeautifulStoneSoup(page)
+    return BeautifulSoup(page, features="xml")
 
 if __name__ == '__main__':
     try:
