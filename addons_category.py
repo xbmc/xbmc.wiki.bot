@@ -25,7 +25,6 @@ Usage: python pwb.py addons_category.py
 
 import sys, urllib, re, zlib
 from bs4 import BeautifulSoup # For processing XML
-from pywikibot.compat import catlib
 from pywikibot import pagegenerators
 import pywikibot
 
@@ -57,7 +56,7 @@ def UpdateRepoCats(*args):
     soups = importAllAddonXML()
 
     # Get all pages in Category All add-ons
-    cat = catlib.Category(site, u'Category:All add-ons')
+    cat = pywikibot.Category(site, u'Category:All add-ons')
     pages = list(cat.articles(False))
     allRepoCats = repoCatList(site)
 
@@ -78,14 +77,14 @@ def UpdateRepoCats(*args):
 def repoCatList(site):
     CatList = []
     for repoName, repoCat in repoCats.items():
-        CatList.append(catlib.Category(site, 'Category:'+ repoCat))
+        CatList.append(pywikibot.Category(site, 'Category:'+ repoCat))
     return CatList
 
 def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
     # Create list of repos to be removed
     notRepos = []
 
-    if not article.canBeEdited():
+    if not article.has_permission('edit'):
         pywikibot.output("Can't edit %s, skipping it..." % article.aslink())
         return False
 
@@ -109,7 +108,7 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
     #add relevant repos
     for i in range(len(repos)):
         repo = repos[i]
-        newCatList.append(catlib.Category(site, 'Category:'+ repoCats[repo]))
+        newCatList.append(pywikibot.Category(site, 'Category:'+ repoCats[repo]))
         changesMade = True
 
     if not changesMade:
@@ -124,7 +123,7 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
             pywikibot.output(
                 u'Skipping %s because of interwiki link to self' % article)
         try:
-            article.put(text, summary='Addon-Bot repo category update', watchArticle = None, minorEdit = True)
+            article.put(text, summary='Addon-Bot repo category update', watch = None, minor = True)
         except pywikibot.EditConflict:
             pywikibot.output(
                 u'Skipping %s because of edit conflict' % article.title())

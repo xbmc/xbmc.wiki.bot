@@ -73,7 +73,7 @@ def UpdateAddons(*args):
         # Get content of wiki page
         page = pywikibot.Page(site, pagename)
         try:
-            oldtext = page.get(force = False, get_redirect = True, sysop = False)
+            oldtext = page.get(force = False, get_redirect = True)
         except pywikibot.NoPage:
             oldtext =  ''
             pywikibot.output(u'%s not found' % pagename)
@@ -130,7 +130,7 @@ def UpdateAddons(*args):
 
         # Push new page to wiki
         try:
-            page.put(newtext, summary='Addon-Bot Update', watchArticle = None, minorEdit = True)
+            page.put(newtext, summary='Addon-Bot Update', watch = None, minor = True)
         except pywikibot.LockedPage:
             pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
         except pywikibot.EditConflict:
