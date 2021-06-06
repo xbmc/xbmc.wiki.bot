@@ -85,7 +85,7 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
     notRepos = []
 
     if not article.has_permission('edit'):
-        pywikibot.output("Can't edit %s, skipping it..." % article.aslink())
+        pywikibot.output("Can't edit %s, skipping it..." % article.title(asLink=True))
         return False
 
     cats = article.categories()
@@ -124,19 +124,19 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
                 u'Skipping %s because of interwiki link to self' % article)
         try:
             article.put(text, summary='Addon-Bot repo category update', watch = None, minor = True)
-        except pywikibot.EditConflict:
+        except pywikibot.exceptions.EditConflictError:
             pywikibot.output(
                 u'Skipping %s because of edit conflict' % article.title())
-        except pywikibot.SpamfilterError as e:
+        except pywikibot.exceptions.SpamblacklistError as e:
             pywikibot.output(
                 u'Skipping %s because of blacklist entry %s'
                 % (article.title(), e.url))
-        except pywikibot.LockedPage:
+        except pywikibot.exceptions.LockedPageError:
             pywikibot.output(
                 u'Skipping %s because page is locked' % article.title())
-        except pywikibot.PageNotSaved as error:
+        except pywikibot.exceptions.OtherPageSaveError as error:
             pywikibot.output(u"Saving page %s failed: %s"
-                         % (article.aslink(), error.message))
+                         % (article.title(asLink=True), error.message))
 
 def checkInRepo(addon_id, soups):
     repos = [ ]

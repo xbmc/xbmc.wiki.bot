@@ -131,11 +131,11 @@ def UpdateAddons(*args):
         # Push new page to wiki
         try:
             page.put(newtext, summary='Addon-Bot Update', watch = None, minor = True)
-        except pywikibot.LockedPage:
-            pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
-        except pywikibot.EditConflict:
+        except pywikibot.exceptions.LockedPageError:
+            pywikibot.output(u"Page %s is locked; skipping." % page.title(asLink=True))
+        except pywikibot.exceptions.EditConflictError:
             pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
-        except pywikibot.SpamfilterError as error:
+        except pywikibot.exceptions.SpamblacklistError as error:
             pywikibot.output(u'Cannot change %s because of spam blacklist entry %s' % (page.title(), error.url))
         except:
             pywikibot.output(u"Some Error writing to wiki page, skipping..")
