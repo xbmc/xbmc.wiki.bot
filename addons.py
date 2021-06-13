@@ -74,12 +74,12 @@ def UpdateAddons(*args):
         page = pywikibot.Page(site, pagename)
         try:
             oldtext = page.get(force = False, get_redirect = True)
-        except pywikibot.NoPage:
+        except pywikibot.exceptions.NoPageError:
             oldtext =  ''
             pywikibot.output(u'%s not found' % pagename)
-        except pywikibot.IsRedirectPage:
+        except pywikibot.exceptions.IsRedirectPageError:
             pywikibot.output(u'%s is a redirect!' % pagename)
-        except pywikibot.Error as error: # third exception, take the problem and print
+        except pywikibot.exceptions.Error as error: # third exception, take the problem and print
             pywikibot.output(u"Some Error (%s), skipping.." % error)
             continue
 
@@ -132,7 +132,7 @@ def UpdateAddons(*args):
         try:
             page.put(newtext, summary='Addon-Bot Update', watch = None, minor = True)
         except pywikibot.exceptions.LockedPageError:
-            pywikibot.output(u"Page %s is locked; skipping." % page.title(asLink=True))
+            pywikibot.output(u"Page %s is locked; skipping." % page.title(as_link=True))
         except pywikibot.exceptions.EditConflictError:
             pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
         except pywikibot.exceptions.SpamblacklistError as error:

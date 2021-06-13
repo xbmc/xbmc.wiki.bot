@@ -85,7 +85,7 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
     notRepos = []
 
     if not article.has_permission('edit'):
-        pywikibot.output("Can't edit %s, skipping it..." % article.title(asLink=True))
+        pywikibot.output("Can't edit %s, skipping it..." % article.title(as_link=True))
         return False
 
     cats = article.categories()
@@ -136,7 +136,7 @@ def addRemoveRepoCats(article, repos, allRepoCats, comment=None):
                 u'Skipping %s because page is locked' % article.title())
         except pywikibot.exceptions.OtherPageSaveError as error:
             pywikibot.output(u"Saving page %s failed: %s"
-                         % (article.title(asLink=True), error.message))
+                         % (article.title(as_link=True), error.message))
 
 def checkInRepo(addon_id, soups):
     repos = [ ]
