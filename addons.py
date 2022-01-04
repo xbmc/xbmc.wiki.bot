@@ -96,7 +96,7 @@ def UpdateAddons(*args):
                          "\n|extension point=" + addon_data['extension point'] +
                          "\n|provides="+ addon_data['provides'] +
                          "\n|Summary=" + addon_data['summary'] +
-                         "\n|Description=" + addon_data['description'] +
+                         "\n|Description=" + addon_data['description'].replace('\\','/') +
                          "\n|Platform=" + addon_data['platform'] +
                          "\n|Language=" + addon_data['language'] +
                          "\n|License=" + addon_data['license'] +
