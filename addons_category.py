@@ -36,6 +36,7 @@ repoUrls={
     'Krypton':u'http://mirrors.kodi.tv/addons/krypton/',
     'Leia':u'http://mirrors.kodi.tv/addons/leia/',
     'Matrix':u'http://mirrors.kodi.tv/addons/matrix/',
+    'Nexus':u'http://mirrors.kodi.tv/addons/nexus/',
     }
 
 repoCats={
@@ -46,6 +47,7 @@ repoCats={
     'Krypton':u'Krypton add-on repository',
     'Leia':u'Leia add-on repository',
     'Matrix':u'Matrix add-on repository',
+    'Nexus':u'Nexus add-on repository',
     }
 
 def UpdateRepoCats(*args):
