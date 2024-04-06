@@ -10,7 +10,8 @@ where repo (optional) can be one of these:
  * Krypton
  * Leia
  * Matrix
- * Nexus (default)
+ * Nexus
+ * Omega (default)
 """
 #
 # Copyright (C) 2005-2015 Team Kodi
@@ -43,6 +44,7 @@ repoUrls={'Gotham':u'http://mirrors.kodi.tv/addons/gotham/',
           'Leia':u'http://mirrors.kodi.tv/addons/leia/',
           'Matrix':u'http://mirrors.kodi.tv/addons/matrix/',
           'Nexus':u'http://mirrors.kodi.tv/addons/nexus/',
+          'Omega':u'http://mirrors.kodi.tv/addons/omega/',
          }
 
 def UpdateAddons(*args):
@@ -50,7 +52,7 @@ def UpdateAddons(*args):
     try:
         repoUrl = repoUrls[pywikibot.handle_args(*args)[0]]
     except:
-        repoUrl = repoUrls['Nexus']
+        repoUrl = repoUrls['Omega']
     pywikibot.output(u'Repo URL: ' + repoUrl)
     try:
       soup = importAddonXML(repoUrl + 'addons.xml.gz')

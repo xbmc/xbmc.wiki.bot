@@ -37,6 +37,7 @@ repoUrls={
     'Leia':u'http://mirrors.kodi.tv/addons/leia/',
     'Matrix':u'http://mirrors.kodi.tv/addons/matrix/',
     'Nexus':u'http://mirrors.kodi.tv/addons/nexus/',
+    'Omega':u'http://mirrors.kodi.tv/addons/omega/',
     }
 
 repoCats={
@@ -48,6 +49,7 @@ repoCats={
     'Leia':u'Leia add-on repository',
     'Matrix':u'Matrix add-on repository',
     'Nexus':u'Nexus add-on repository',
+    'Omega':u'Omega add-on repository',
     }
 
 def UpdateRepoCats(*args):
