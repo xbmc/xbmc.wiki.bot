@@ -61,7 +61,7 @@ def UpdateRepoCats(*args):
 
     # Get all pages in Category All add-ons
     cat = pywikibot.Category(site, u'Category:All add-ons')
-    pages = list(cat.articles(False))
+    pages = list(cat.articles(recurse=False))
     allRepoCats = repoCatList(site)
 
     for Page in pagegenerators.PreloadingGenerator(pages,100):
