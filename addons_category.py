@@ -67,7 +67,7 @@ def UpdateRepoCats(*args):
     for Page in pagegenerators.PreloadingGenerator(pages,100):
         # Get addon_id via regexp
         addon_id = None
-        addon_id = re.search("\|ID=([a-zA-Z0-9_\.\-]+)",Page.get())
+        addon_id = re.search(r"\|ID=([a-zA-Z0-9_\.\-]+)",Page.get())
         if not addon_id:
             pywikibot.output("Can't find addon_id for %s, skipping it..." % Page.title())
             continue
