@@ -257,8 +257,8 @@ def extractAddonData(data):
         except:
             addon['icon url'] = u''+addon['path']+'/icon.png'
 
-    addon['summary'] = re.sub("\[CR\]","\\n",addon['summary'])
-    addon['description'] = re.sub("\[CR\]","\\n",addon['description'])
+    addon['summary'] = re.sub(r"\[CR\]","\\n",addon['summary'])
+    addon['description'] = re.sub(r"\[CR\]","\\n",addon['description'])
     return addon
 
 # Download addons.xml and return Soup xml class
